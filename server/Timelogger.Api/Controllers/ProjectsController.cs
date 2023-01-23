@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Timelogger.Entities;
 
 namespace Timelogger.Api.Controllers
 {
@@ -12,18 +13,27 @@ namespace Timelogger.Api.Controllers
 			_context = context;
 		}
 
-		[HttpGet]
-		[Route("hello-world")]
-		public string HelloWorld()
-		{
-			return "Hello Back!";
-		}
-
 		// GET api/projects
 		[HttpGet]
 		public IActionResult Get()
 		{
 			return Ok(_context.Projects);
+		}
+		[HttpPost("create")]
+		public IActionResult Create([FromBody]Project projectProps)
+		{
+			var project = new Project
+			{
+				Name = projectProps.Name,
+				Description = projectProps.Description,
+				Client = projectProps.Client,
+				ContributorName = projectProps.ContributorName,
+				TimeSpent = projectProps.TimeSpent,
+				Completed = projectProps.Completed
+			};
+			_context.Projects.Add(project);
+			_context.SaveChanges();
+			return Ok(project);
 		}
 	}
 }

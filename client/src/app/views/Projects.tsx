@@ -6,14 +6,20 @@ import { ProjectProps } from "../types/ProjectProps";
 
 export default function Projects() {
     const [projects, setProjects] = useState<ProjectProps[]>([]);
+    
     useEffect(() => {
         getAll().then(data => setProjects(data));
       }, []); 
+    
+      const addProject = (newProject: ProjectProps) => {
+        setProjects([...projects, newProject]);
+    }
+    
     return (
         <>
             <div className="flex items-center my-6">
                 <div className="w-1/2">
-                    <NewProjectModal />
+                    <NewProjectModal onNewProject={addProject} />
                 </div>
 
                 <div className="w-1/2 flex justify-end">
