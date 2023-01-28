@@ -1,3 +1,4 @@
+import { TimeRegistration } from './TimeRegistration';
 export type ProjectProps = {
     id: number;
     name: string;
@@ -5,5 +6,9 @@ export type ProjectProps = {
     client: string;
     contributorName: string;
     timeSpent: number;
+    startDate: Date;
+    endDate: Date;
     completed: boolean;
+    timeRegistrations: TimeRegistration[];
 }
+

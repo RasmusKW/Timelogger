@@ -10,6 +10,7 @@ namespace Timelogger
 		{
 		}
 
+		public DbSet<TimeRegistration> TimeRegistrations { get; set; }
 		public DbSet<Project> Projects { get; set; }
 	}
 }

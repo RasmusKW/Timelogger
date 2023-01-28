@@ -1,6 +1,6 @@
 import React,  {useState} from 'react'
 import { ProjectProps } from '../types/ProjectProps'
-import { createProject } from '../api/projects'
+import { createProject } from '../api/projectsService'
 type NewProjectCallback = (project: ProjectProps) => void;
 interface Props {
     onNewProject: NewProjectCallback;
@@ -14,15 +14,44 @@ export default function NewProjectModal(props: Props) {
         client: '',
         contributorName: '',
         timeSpent: 0,
-        completed: false
+        completed: false,
+        startDate: new Date(),        
+        endDate: new Date(),
+        timeRegistrations: []
     });
-
+    const modalRef = React.useRef<HTMLButtonElement>(null);
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-            event.preventDefault();
+        if (!project.description) {
+            project.description = "No description provided";
+        }
+        if (!project.client) {
+            project.client = "No client provided";
+        }
+        if (!project.contributorName) {
+            project.contributorName = "No contributor provided";
+        }
+        if (!project.timeSpent) {
+            project.timeSpent = 0; 
+        }
+        
+        setProject({ ...project, id: Date.now() + Math.random()});
             createProject(project).then((data) => {
                 props.onNewProject(data);
             });
+            setProject({
+                id: 0,
+                name: '',
+                description: '',
+                client: '',
+                contributorName: '',
+                timeSpent: 0,
+                completed: false,
+                startDate: new Date(),
+                endDate: new Date(),
+                timeRegistrations: []
+            });
+            modalRef.current!.click();
     }
     return (
         <div>
@@ -48,74 +77,91 @@ export default function NewProjectModal(props: Props) {
 
                         {/* Form */}
                         <div className="block p-6 bg-white max-w-md">
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group mb-6">
-                            <label htmlFor="projectName">Project Name</label>
-                                <input
-                                    type="text"
-                                    id="projectName"
+                            <form onSubmit={handleSubmit}>
+                                <div className="form-group mb-6">
+                                <label htmlFor="projectName">Project Name</label>
+                                    <input
+                                        type="text"
+                                        id="projectName"
+                                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        value={project.name} 
+                                        onChange={e => setProject({ ...project, name: e.target.value })} 
+                                        placeholder="Enter project name"
+                                        required/>
+                                        
+                                </div>
+                                <div className="form-group mb-6">
+                                <label htmlFor="projectDescription">Description</label>
+                                    <textarea
+                                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        id="projectDescription"
+                                        rows={3}
+                                        value={project.description} 
+                                        onChange={e => setProject({ ...project, description: e.target.value })} 
+                                        placeholder="Enter project description">
+                                    </textarea>
+                                </div>
+                                <div className="form-group mb-6">
+                                <label htmlFor="projectClient">Client Name</label>
+                                    <input
+                                        type="text"
+                                        id="projectClient"
+                                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        value={project.client} 
+                                        onChange={e => setProject({ ...project, client: e.target.value })} 
+                                        placeholder="Enter client name" />
+                                </div>
+                                <div className="form-group mb-6">
+                                <label htmlFor="projectContributor">Contributor</label>
+                                    <input
+                                        type="text"
+                                        id="projectContributor"
+                                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        value={project.contributorName} 
+                                        onChange={e => setProject({ ...project, contributorName: e.target.value })} 
+                                        placeholder="Enter contributor name"/>
+                                </div>
+                                <div className="form-group mb-6">
+                                <label htmlFor="projectTimeSpent">Timespent (inc. by 30min)</label>
+                                    <input
+                                        type="number"
+                                        id="projectTimeSpent"
+                                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        value={project.timeSpent} 
+                                        onChange={e => setProject({ ...project, timeSpent: parseFloat(e.target.value) })} 
+                                        placeholder="Enter time spent" 
+                                        min="0"
+                                        step="30"/>
+                                </div>
+                                <div className="form-group mb-6">
+                                    <label htmlFor="floatingInput" className="text-gray-700">End date</label>
+                                    <input type="date"
                                     className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                    value={project.name} 
-                                    onChange={e => setProject({ ...project, name: e.target.value })} 
-                                    placeholder="Enter project name"/>
-                            </div>
-                            <div className="form-group mb-6">
-                            <label htmlFor="projectDescription">Project Description</label>
-                                <textarea
-                                    className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                    id="projectDescription"
-                                    rows={3}
-                                    value={project.description} 
-                                    onChange={e => setProject({ ...project, description: e.target.value })} 
-                                    placeholder="Enter project description">
-                                </textarea>
-                            </div>
-                            <div className="form-group mb-6">
-                            <label htmlFor="projectClient">Project Client</label>
-                                <input
-                                    type="text"
-                                    id="projectClient"
-                                    className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                    value={project.client} 
-                                    onChange={e => setProject({ ...project, client: e.target.value })} 
-                                    placeholder="Enter client name" />
-                            </div>
-                            <div className="form-group mb-6">
-                            <label htmlFor="projectContributor">Project Contriubtor</label>
-                                <input
-                                    type="text"
-                                    id="projectContributor"
-                                    className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                    value={project.contributorName} 
-                                    onChange={e => setProject({ ...project, contributorName: e.target.value })} 
-                                    placeholder="Enter contributor name"/>
-                            </div>
-                            <div className="form-group mb-6">
-                            <label htmlFor="projectTimeSpent">Project Timespent</label>
-                                <input
-                                    type="number"
-                                    id="projectTimeSpent"
-                                    className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                    value={project.timeSpent} 
-                                    onChange={e => setProject({ ...project, timeSpent: parseFloat(e.target.value) })} 
-                                    placeholder="Enter time spent" 
-                                    min="0"
-                                    step="30"/>
-                            </div>
-                            <button
-                                type="submit"
-                                className="w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                                data-bs-dismiss="modal">
-                                Add Project
+                                    placeholder="Select a date" data-mdb-toggle="datepicker" 
+                                    
+                                    value={project.endDate.toISOString().substring(0,10)} 
+                                    onChange={e => {
+                                        if (e.target.value) {
+                                            setProject({ ...project, endDate: new Date(e.target.value) });
+                                        } else {
+                                            setProject({ ...project, endDate: new Date() });
+                                        }
+                                    }} />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                                    >
+                                    Add Project
+                                </button>
+                            </form>
+                        </div>
+                        <div
+                            className="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
+                            <button type="button" ref={modalRef} className="px-6 py-2.5 bg-purple-600 text-white font-medium text-xs uppercase rounded" data-bs-dismiss="modal">
+                                Close
                             </button>
-                        </form>
-                    </div>
-                    <div
-                        className="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-                        <button type="button" className="px-6 py-2.5 bg-purple-600 text-white font-medium text-xs uppercase rounded" data-bs-dismiss="modal">
-                            Close
-                        </button>
-                    </div>
+                        </div>
                     </div>
                 </div>
             </div>

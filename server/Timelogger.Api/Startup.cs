@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using Timelogger.Entities;
+using System.Collections.Generic;
 
 namespace Timelogger.Api
 {
@@ -76,8 +77,11 @@ namespace Timelogger.Api
 				Description = "This project incases the assignements for the interview",
 				Client = "Visma e-conomic",
 				ContributorName = "Rasmus",
-				TimeSpent = 5.5,
+				TimeSpent = 180,
+				StartDate = "2023-01-23",
+				EndDate = "2020-01-28",
 				Completed = true,
+				// TimeRegistrations = new List<TimeRegistration>()
 			};
 
 			var p2 = new Project
@@ -87,13 +91,15 @@ namespace Timelogger.Api
 				Description = "A todo app to keep track of various tasks",
 				Client = "Inhouse Technologies",
 				ContributorName = "Martin",
-				TimeSpent = 2.5,
-				Completed = true,
-			};
+				TimeSpent = 30,
+				StartDate = "2023-01-28",
+				EndDate = "2020-02-02",
+				Completed = false,
+				// TimeRegistrations = new List<TimeRegistration>()
 
+			};
 			context.Projects.Add(p1);
 			context.Projects.Add(p2);
-
 			context.SaveChanges();
 		}
 	}

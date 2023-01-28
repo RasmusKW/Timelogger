@@ -1,4 +1,6 @@
-﻿namespace Timelogger.Entities
+﻿using System.Collections.Generic;
+
+namespace Timelogger.Entities
 {
 	public class Project
 	{
@@ -8,6 +10,9 @@
 		public string Client { get; set; }
 		public string ContributorName { get; set; }
 		public double TimeSpent { get; set; }
+		public string StartDate { get; set; }
+		public string EndDate { get; set; }
 		public bool Completed { get; set; }
+		// public List<TimeRegistration> TimeRegistrations { get; set; }
 	}
 }

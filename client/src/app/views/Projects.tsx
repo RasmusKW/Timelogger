@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "../components/Table";
 import NewProjectModal from "../components/NewProjectModal";
-import { getAll } from "../api/projects";
+import { getAll } from "../api/projectsService";
 import { ProjectProps } from "../types/ProjectProps";
 
 export default function Projects() {
@@ -9,38 +9,31 @@ export default function Projects() {
     
     useEffect(() => {
         getAll().then(data => setProjects(data));
-      }, []); 
+    }, []); 
     
-      const addProject = (newProject: ProjectProps) => {
+    const addProject = (newProject: ProjectProps) => {
         setProjects([...projects, newProject]);
     }
-    
+
+    function handleDelete(id: number) {
+        setProjects(prevProjects => prevProjects.filter(project => project.id !== id));
+    }
+
+    function handleUpdate(updatedProject: ProjectProps | undefined) {
+        if(!updatedProject) {
+            throw new Error("updatedProject is undefined");
+        }
+        setProjects(prevProjects => prevProjects.map(project => project.id === updatedProject.id ? updatedProject : project));
+    }
     return (
         <>
             <div className="flex items-center my-6">
                 <div className="w-1/2">
                     <NewProjectModal onNewProject={addProject} />
                 </div>
-
-                <div className="w-1/2 flex justify-end">
-                    <form>
-                        <input
-                            className="border rounded-full py-2 px-4"
-                            type="search"
-                            placeholder="Search"
-                            aria-label="Search"
-                        />
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white rounded-full py-2 px-4 ml-2"
-                            type="submit"
-                        >
-                            Search
-                        </button>
-                    </form>
-                </div>
             </div>
 
-            <Table projects={projects}/>
+            <Table projects={projects} onDelete={handleDelete} onUpdate={handleUpdate} />
         </>
     );
 }
