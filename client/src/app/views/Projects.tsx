@@ -19,7 +19,7 @@ export default function Projects() {
         setProjects(prevProjects => prevProjects.filter(project => project.id !== id));
     }
 
-    function handleUpdate(updatedProject: ProjectProps | undefined) {
+    function handleUpdate(updatedProject: ProjectProps) {
         if(!updatedProject) {
             throw new Error("updatedProject is undefined");
         }

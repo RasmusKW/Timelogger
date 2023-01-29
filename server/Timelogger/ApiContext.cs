@@ -9,8 +9,8 @@ namespace Timelogger
 			: base(options)
 		{
 		}
-
-		public DbSet<TimeRegistration> TimeRegistrations { get; set; }
+		// Unused, but kept for reference
+		// public DbSet<TimeRegistration> TimeRegistrations { get; set; }
 		public DbSet<Project> Projects { get; set; }
 	}
 }

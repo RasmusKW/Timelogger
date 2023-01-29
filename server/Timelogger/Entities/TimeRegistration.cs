@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 namespace Timelogger.Entities
 {
-    
+    //Unused class, but kept for reference
     public class TimeRegistration
     {
         [Key]

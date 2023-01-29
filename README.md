@@ -55,3 +55,26 @@ Server - `dotnet restore` - to restore nuget packages, `dotnet build` - to build
 The server solution contains an API only with a basic Entity Framework in memory context that acts as a database.
 
 Client - `npm install` to install dependencies, `npm start` runs the create-react-app development server
+
+## My thoughts
+The project was a suitable test for me on the parameters of complexity, experience and time. This is the first time i ever touch React so please keep in consideration that i first had to learn and understand the general principles of React. Some of my solutions might therefore reflect my lack of knowledge, though i think i came to some fair solutions given the time spent. 
+
+It's also my first time using .NET and the ASP.NET Core framework. I learned the principles rather fast as i have a bit of experience in C# and of course the service, controller and whole API matter i have plenty of experience with so it was more of an overview i needed to understand where what happened. 
+
+I added tailwind elements to the project to minimize the time to build new tailwind elements myself.
+
+## Future improvements
+If i had more time to improve the project i would touch upon the points below
+
+### Fix the time registrations
+I would make the time registrations be reflected on the backend for each project, instead of the frontend. The current solution with local storage is a hacky solution which easily can be fiddled with by anyone with a bit of knowledge of browsers and can be used for ill intentions. Also, the ability to remove a single time registration from the overview.
+
+### Multiple contributors
+To make the project scale even better with multiple freelancers working on the same project, i would make the contributor field it's own representation in the backend so each project would have a list of contributors which could be added to, updated and deleted. 
+
+### Component optimization
+Especially the Project.tsx is far to big to my liking. I'd much rather have smaller components keeping functionality to a minimum also to max reuseability. 
+The Project.tsx uses multiple modals which each could be it's own component with the functionality added in each component.
+
+### Burndown chart
+It was my plan to add a burndown chart but due to time, i quickly scrapped the idea as it would simply take too long.

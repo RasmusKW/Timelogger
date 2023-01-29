@@ -11,6 +11,7 @@ type Props = {
 }
 
 export default function Project({project, onDelete, onUpdate}: Props) {
+
   // Hacky solution to store time registrations in local storage
   const initialTimeRegistrations = JSON.parse(localStorage.getItem(`timeRegistrations-${project.id}`) || '[]');
   const [timeRegistrations, setTimeRegistrations] = useState<TimeRegistration[]>(initialTimeRegistrations);
@@ -21,15 +22,20 @@ export default function Project({project, onDelete, onUpdate}: Props) {
   // Ref for modal to close it after submit
   const modalRef = React.useRef<HTMLButtonElement>(null);
 
+  // Handle time registration form submit
   const handleUpdate = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    
+    // Getting the input value from the form
     const input = event.currentTarget.querySelector('#projectTimeSpent') as HTMLInputElement;
     let newTimeSpent = Number(input.value);
-        
+    
+    // Validation for time input
     if (newTimeSpent === 0) {
       newTimeSpent = 30;
     }
     
+    // Creating a new time registration object and adding it to the time registrations array
     const newTimeRegistration = {
       projectId: project.id,
       timeSpent: newTimeSpent,
@@ -37,11 +43,14 @@ export default function Project({project, onDelete, onUpdate}: Props) {
     }
     setTimeRegistrations([...timeRegistrations, newTimeRegistration]);
 
+    // Oject to update the project with
     const updateData = {...project,
       timeSpent: project.timeSpent + newTimeSpent,
-      // Code that would replace the more hacky frontend solutoin of time registrations.
+      // Code that would replace the more hacky frontend solution of time registrations.
       // timeRegistrations: [...project.timeRegistrations, newTimeRegistration]
     }
+
+    // Updating the project using the updateProject function from the projectsService
     updateProject(project.id, updateData).then(data => {
       if (data.error) {
           console.log(data.error);
@@ -50,10 +59,12 @@ export default function Project({project, onDelete, onUpdate}: Props) {
       }
     });
 
+    // Resetting the form and closing the modal
     event.currentTarget.reset();
     modalRef.current!.click();
   }
   
+  // Function to toggle the completed status of a project
   const handleToggleCompleted = (id: number) => {
     const updatedProject = {...project, completed: !project.completed};
     updateProject(id, updatedProject).then(data => {
@@ -61,6 +72,7 @@ export default function Project({project, onDelete, onUpdate}: Props) {
     });
   }
 
+  // Function to handle deletion of a project
   const handleDelete = () => {
     deleteProject(project.id).then(() => {
       onDelete(project.id);
@@ -86,7 +98,8 @@ export default function Project({project, onDelete, onUpdate}: Props) {
       <td className="border px-4 py-2">{project.client}</td>
       <td className="border px-4 py-2">{project.contributorName}</td>
       <td className="border px-4 py-2">{timeSpent}</td>
-      <td className="border px-4 py-2">{new Date(project.startDate).toLocaleDateString("da-DK", {day: '2-digit', month: '2-digit', year: 'numeric'})}</td>
+      {/* Formatting the date inline */}
+      <td className="border px-4 py-2">{new Date(project.startDate).toLocaleDateString("da-DK", {day: '2-digit', month: '2-digit', year: 'numeric'})}</td> 
       <td className="border px-4 py-2">{new Date(project.endDate).toLocaleDateString("da-DK", {day: '2-digit', month: '2-digit', year: 'numeric'})}</td>
       <td className="border px-4 py-2"> {project.completed ? "Completed" : "In Progress"} 
         <input className='hover:cursor-pointer' onChange={() => handleToggleCompleted(project.id)} type="checkbox" checked={project.completed} />
@@ -122,9 +135,8 @@ export default function Project({project, onDelete, onUpdate}: Props) {
                   </div>
                   <button
                     type="submit"
-                    className="w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                  >
-                    Save
+                    className="w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded"
+                    >Save
                   </button>
                 </form>
               </div>
@@ -139,8 +151,9 @@ export default function Project({project, onDelete, onUpdate}: Props) {
           </div>
         </div>
         {/* End time reg. Modal */}
-
       </td>
+
+      {/* Delete functionality */}
       <td className="border px-4 py-2">
         <button type="button" className="inline-block px-4 py-4 text-white text-xs rounded bg-red-600"
           data-bs-toggle="modal"
@@ -171,13 +184,15 @@ export default function Project({project, onDelete, onUpdate}: Props) {
           </div>
         </div>
         {/* End delete Modal */}
-
       </td>
+
+      {/* Time overview */}
       <td className="border px-4 py-2">
         <button type="button" className="inline-block px-2 py-2 text-white text-xs rounded bg-blue-600"
           data-bs-toggle="modal"
-          data-bs-target={`#timeModal-${project.id}`}
-        >Time Overview</button>
+          data-bs-target={`#timeModal-${project.id}`}>Time Overview</button>
+
+        {/* Time overview modal */}
         <div className="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id={`timeModal-${project.id}`} tabIndex={-1} aria-labelledby="overviewModalLabel" aria-hidden="true">
           <div className="modal-dialog relative w-auto pointer-events-none">
             <div className="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
@@ -227,6 +242,7 @@ export default function Project({project, onDelete, onUpdate}: Props) {
           </div>
         </div>
       </td>
+      {/* End Time overview */}
     </tr>
   )
 }

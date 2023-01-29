@@ -13,6 +13,8 @@ namespace Timelogger.Entities
 		public string StartDate { get; set; }
 		public string EndDate { get; set; }
 		public bool Completed { get; set; }
+		
+		// Below was supposed to be used to keep track of the time registrations for a project
 		// public List<TimeRegistration> TimeRegistrations { get; set; }
 	}
 }

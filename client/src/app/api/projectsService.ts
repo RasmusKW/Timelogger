@@ -2,6 +2,7 @@ const BASE_URL = "http://localhost:3001/api";
 import { ProjectProps } from "../types/ProjectProps";
 // import { TimeRegistration } from "../types/TimeRegistration";
 
+  // get all projects
   export async function getAll(): Promise<Array<ProjectProps>> {
       let projectData = await fetch(`${BASE_URL}/projects`)
       .then((res) => res.json())
@@ -10,6 +11,7 @@ import { ProjectProps } from "../types/ProjectProps";
       return projectData;
   }
   
+  // create project function, taking a project object as parameter
   export async function createProject(project: ProjectProps) {
     try {
       let response = await fetch(`${BASE_URL}/projects/create`, {
@@ -19,25 +21,25 @@ import { ProjectProps } from "../types/ProjectProps";
         },
         body: JSON.stringify(project)
       });
-      let data = await response.json();
-      return data;
+      return await response.json();;
     } catch (err) {
       console.log(err);
     }
   }
 
+  // delete project based on id
   export async function deleteProject(id: number) {
     try {
       let response = await fetch(`${BASE_URL}/projects/delete/${id}`, {
         method: "DELETE"
-      });
-      let data = await response.json();      
-      return data;
+      });     
+      return await response.json();
     } catch (err) {
       console.log(err);
     }
   }
 
+  // update project based on id and project object
   export async function updateProject(id: number, project: ProjectProps) {
     try {
       let response = await fetch(`${BASE_URL}/projects/update/${id}`, {
